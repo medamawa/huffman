@@ -30,27 +30,25 @@ void write_zip(FILE *input_fp, FILE *zip_fp, char **code_list) {
         }
     }
 
-    printf("\n#######\n");
-    printf("estimated byte: %d\n", estimated_bit / 8);
-    printf("#######\n\n");
+    // 予想されるbyte数を表示
+    printf("[estimated byte: %d]\n", estimated_bit / 8);
 
     // txtをcodeに変換して書き込む
     char c;
-    char tmp_code = 0;
+    unsigned char tmp_code = 0;
     char tmp_code_len = 0;
     fread(&c, sizeof(char), 1, input_fp);
     for (size_t rsize = 1; rsize != 0; rsize = fread(&c, sizeof(char), 1, input_fp)) {
         char *code = code_list[(unsigned char)c];
         for (int i = 0; code[i] != '\0'; i++) {
             if (code[i] == '0') {
-                tmp_code = tmp_code << 1;
                 ++tmp_code_len;
             } else if (code[i] == '1') {
-                tmp_code = (tmp_code << 1) + 1;
+                tmp_code |= 1 << (7 - tmp_code_len);
                 ++tmp_code_len;
             }
 
-            if (tmp_code_len % 8 == 7) {
+            if (tmp_code_len == 8) {
                 fwrite(&tmp_code, sizeof(char), 1, zip_fp);
                 tmp_code = 0;
                 tmp_code_len = 0;

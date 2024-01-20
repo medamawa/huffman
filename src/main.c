@@ -3,6 +3,7 @@
 #include <string.h>
 #include "../include/encode.h"
 #include "../include/write.h"
+#include "../include/decode.h"
 
 int main(int argc, char **argv)
 {
@@ -12,13 +13,16 @@ int main(int argc, char **argv)
     }
     
     // 構文解析
+    printf("######## structure ########\n");
     Node *root = encode(argv[1]);
     char *code_list[NSYMBOLS];
     for (int i = 0; i < NSYMBOLS; i++) code_list[i] = malloc(sizeof(char) * NSYMBOLS);                  // free()をどこかで,,, 誰か,,,,,,
 
     traverse_tree(0, root, code_list);
 
+
     // .zip作成
+    printf("\n\n######## zip ########\n");
     FILE *input_fp;
     if ((input_fp = fopen(argv[1], "rb")) == NULL) {
         perror(argv[1]); 
@@ -39,19 +43,28 @@ int main(int argc, char **argv)
     fclose(input_fp);
     fclose(zip_fp);
 
+
     // 解凍
-    FILE *zip_fp;
-    if ((zip_fp = fopen(zip_filename, "wb")) == NULL) {
+    printf("\n\n######## unzip ########\n");
+    FILE *d_zip_fp;
+    if ((d_zip_fp = fopen(zip_filename, "rb")) == NULL) {
         perror(zip_filename); 
         return EXIT_FAILURE;
     }
-    
+
+
+    basename = strtok(basename, ".");
     char *unzip_filename = strcat(basename, "_unzip.txt");
     FILE *unzip_fp;
     if ((unzip_fp = fopen(unzip_filename, "wb")) == NULL) {
         perror(unzip_filename); 
         return EXIT_FAILURE;
     }
+
+    read_zip(d_zip_fp, unzip_fp);
+
+    fclose(d_zip_fp);
+    fclose(unzip_fp);
     
     return EXIT_SUCCESS;
 }
