@@ -4,8 +4,6 @@
 #include <limits.h>
 #include "../include/encode.h"
 
-#define NSYMBOLS 256
-
 // 構造体定義
 struct node {
     int symbol;
@@ -14,7 +12,8 @@ struct node {
     Node *right;
 };
 
-static int symbol_count[NSYMBOLS];
+// static int symbol_count[NSYMBOLS];
+int symbol_count[NSYMBOLS];
 
 // 以下このソースで有効なstatic関数のプロトタイプ宣言
 
@@ -132,7 +131,7 @@ void traverse_tree(const int depth, const Node *np, char **code_list)
         code[depth] = '\0';     // 終端文字
         code_list[np->symbol] = (char *)malloc(sizeof(char) * (depth + 1));         // free()をどこかで,,, 誰か,,,,,,
         strcpy(code_list[np->symbol], code);
-        if ((int)np->symbol == 10) {
+        if (np->symbol == '\n') {
             printf("[\\n]: %s\n", code);
         } else {
             printf("[%c]: %s\n", np->symbol, code);

@@ -1,5 +1,7 @@
 #pragma once
 
+#define NSYMBOLS 256
+
 typedef struct node Node;
    
 // ファイルをエンコードし木のrootへのポインタを返す
