@@ -1,17 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <limits.h>
-#include "encode.h"
+#include "../include/encode.h"
+
+#define NSYMBOLS 256
 
 // 構造体定義
-struct node{
+struct node {
     int symbol;
     int count;
     Node *left;
     Node *right;
 };
-
-#define NSYMBOLS 256
 
 static int symbol_count[NSYMBOLS];
 
@@ -121,7 +122,7 @@ static Node *build_tree(void)
 // Perform depth-first traversal of the tree
 // 深さ優先で木を走査する
 // 現状は何もしていない（再帰してたどっているだけ）
-void traverse_tree(const int depth, const Node *np)
+void traverse_tree(const int depth, const Node *np, char **code_list)
 {
     static char code[NSYMBOLS];     // 現在のノードまでの符号を保持する
     
@@ -129,6 +130,8 @@ void traverse_tree(const int depth, const Node *np)
 
     if (np->left == NULL && np->right == NULL) {
         code[depth] = '\0';     // 終端文字
+        code_list[np->symbol] = (char *)malloc(sizeof(char) * (depth + 1));         // free()をどこかで,,, 誰か,,,,,,
+        strcpy(code_list[np->symbol], code);
         if ((int)np->symbol == 10) {
             printf("[\\n]: %s\n", code);
         } else {
@@ -140,7 +143,7 @@ void traverse_tree(const int depth, const Node *np)
         
         if (np->left != NULL) {
             code[depth] = '0';
-            traverse_tree(depth + 1, np->left);
+            traverse_tree(depth + 1, np->left, code_list);
         }
         if (np->right != NULL) {
             for (int i = 0; i < depth; ++i) printf("    ");
@@ -149,7 +152,7 @@ void traverse_tree(const int depth, const Node *np)
             printf("+---");
 
             code[depth] = '1';
-            traverse_tree(depth + 1, np->right);
+            traverse_tree(depth + 1, np->right, code_list);
         }
     }
 }

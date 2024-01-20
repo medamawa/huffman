@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "encode.h"
+#include "../include/encode.h"
 
 int main(int argc, char **argv)
 {
@@ -10,7 +10,10 @@ int main(int argc, char **argv)
     }
     
     Node *root = encode(argv[1]);
-    traverse_tree(0, root);
+    char *code_list[256];
+    traverse_tree(0, root, code_list);
+
+    printf("%c: %s\n", ' ', code_list[' ']);
     
     return EXIT_SUCCESS;
 }
