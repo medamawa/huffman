@@ -63,6 +63,8 @@ int main(int argc, char **argv)
 
     read_zip(d_zip_fp, unzip_fp);
 
+    printf("\n\n######## DONE ########\n\n");
+
     fclose(d_zip_fp);
     fclose(unzip_fp);
     
